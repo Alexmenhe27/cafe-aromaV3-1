@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Café Aroma | Panel administrativo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+<!-- =========================================================
+     INICIO DE SESIÓN (Supabase Auth + rol admin)
+     ========================================================= -->
+<section id="loginView" class="login">
+  <div class="login-card">
+    <h1>☕ Café <span>Aroma</span></h1>
+    <p class="muted">Panel privado del administrador</p>
+    <form id="loginForm">
+      <label>Correo<input type="email" name="email" required placeholder="admin@cafe-aroma.com" autocomplete="username"></label>
+      <label>Contraseña<input type="password" name="password" required autocomplete="current-password"></label>
+      <button type="submit" class="btn primary block">Iniciar sesión</button>
+    </form>
+    <p id="loginMsg" class="error"></p>
+    <a class="back-link" href="index.html">← Volver al sitio</a>
+  </div>
+</section>
+
+<!-- =========================================================
+     PANEL
+     ========================================================= -->
+<div id="app" class="hidden">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">☕ Café <span>Aroma</span><small>Administración</small></div>
+    <nav class="nav" id="nav">
+      <button class="nav-item active" data-view="dashboard">📊 <span>Dashboard</span></button>
+      <button class="nav-item" data-view="orders">🛒 <span>Pedidos</span><i class="count" id="navOrders"></i></button>
+      <button class="nav-item" data-view="inventory">📦 <span>Inventario</span><i class="count warn" id="navInventory"></i></button>
+      <button class="nav-item" data-view="products">☕ <span>Menú y recetas</span></button>
+      <button class="nav-item" data-view="reports">📈 <span>Reportes</span></button>
+      <button class="nav-item" data-view="alerts">🔔 <span>Alertas</span><i class="count danger" id="navAlerts"></i></button>
+      <button class="nav-item" data-view="agent">🤖 <span>Agente</span><i class="count" id="navAgent"></i></button>
+      <button class="nav-item" data-view="customers">👥 <span>Clientes</span></button>
+      <button class="nav-item" data-view="messages">✉️ <span>Mensajes</span><i class="count" id="navMessages"></i></button>
+      <button class="nav-item" data-view="settings">⚙️ <span>Configuración</span></button>
+    </nav>
+    <div class="sidebar-foot">
+      <span id="liveStatus" class="live off">● Conectando…</span>
+      <a href="index.html" target="_blank" rel="noopener">Ver sitio ↗</a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn menu-btn" id="menuBtn" aria-label="Menú">☰</button>
+      <div>
+        <h1 id="viewTitle">Dashboard</h1>
+        <p class="muted small" id="welcome">Panel de control</p>
+      </div>
+      <div class="topbar-actions">
+        <span class="muted small" id="lastUpdate"></span>
+        <button class="btn light" id="refreshAll" title="Actualizar todo">🔄 <span>Actualizar</span></button>
+        <button class="btn light" id="logout">Salir</button>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- ======================= DASHBOARD ======================= -->
+      <section class="view" id="view-dashboard">
+        <h2 class="section-title">Pedidos</h2>
+        <div class="tiles tiles-7" id="dashOrders"></div>
+
+        <h2 class="section-title">Ventas</h2>
+        <div class="tiles tiles-7" id="dashSales"></div>
+
+        <h2 class="section-title">Inventario</h2>
+        <div class="tiles tiles-5" id="dashInventory"></div>
+
+        <div class="grid-2">
+          <article class="card">
+            <div class="card-head"><h3>🤖 El agente detectó</h3><button class="btn tiny light" data-goto="agent">Abrir agente</button></div>
+            <div id="dashFindings" class="findings">Cargando…</div>
+          </article>
+          <article class="card">
+            <div class="card-head"><h3>📦 Reabastecimiento necesario</h3><button class="btn tiny light" data-goto="inventory">Ir a inventario</button></div>
+            <div id="dashRestock">Cargando…</div>
+          </article>
+        </div>
+
+        <div class="grid-2">
+          <article class="card">
+            <div class="card-head"><h3>🏆 Productos más vendidos (mes)</h3></div>
+            <div id="dashTop">Cargando…</div>
+          </article>
+          <article class="card">
+            <div class="card-head"><h3>💳 Métodos de pago (hoy)</h3></div>
+            <div id="dashPayments">Cargando…</div>
+          </article>
+        </div>
+
+        <h2 class="section-title">Actividad</h2>
+        <div class="grid-3">
+          <article class="card">
+            <div class="card-head"><h3>🧾 Últimos pedidos</h3><button class="btn tiny light" data-goto="orders">Ver todos</button></div>
+            <div id="dashLastOrders" class="activity">Cargando…</div>
+          </article>
+          <article class="card">
+            <div class="card-head"><h3>🔁 Últimos movimientos</h3><button class="btn tiny light" data-goto="inventory" data-subtab="movements">Ver todos</button></div>
+            <div id="dashLastMoves" class="activity">Cargando…</div>
+          </article>
+          <article class="card">
+            <div class="card-head"><h3>🔔 Alertas recientes</h3><button class="btn tiny light" data-goto="alerts">Ver todas</button></div>
+            <div id="dashLastAlerts" class="activity">Cargando…</div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ======================= PEDIDOS ======================= -->
+      <section class="view hidden" id="view-orders">
+        <div class="toolbar">
+          <div class="chips" id="orderFilters">
+            <button class="chip active" data-filter="activos">En curso</button>
+            <button class="chip" data-filter="atrasados">⏱️ Atrasados</button>
+            <button class="chip" data-filter="entregado">Entregados</button>
+            <button class="chip" data-filter="cancelado">Cancelados</button>
+            <button class="chip" data-filter="todos">Todos</button>
+          </div>
+          <input type="search" id="orderSearch" placeholder="Buscar #, código o cliente…">
+        </div>
+        <p class="hint">El inventario se descuenta automáticamente al <b>confirmar</b> un pedido y se devuelve si se cancela después. Límite de atraso: <span id="delayInfo">—</span>.</p>
+        <div id="ordersBoard"></div>
+      </section>
+
+      <!-- ======================= INVENTARIO ======================= -->
+      <section class="view hidden" id="view-inventory">
+        <div class="tiles tiles-5" id="invTiles"></div>
+        <div class="toolbar">
+          <div class="chips" id="invTabs">
+            <button class="chip active" data-subtab="supplies">Insumos</button>
+            <button class="chip" data-subtab="restock">📦 Reposición</button>
+            <button class="chip" data-subtab="movements">Movimientos</button>
+            <button class="chip" data-subtab="suppliers">Proveedores</button>
+          </div>
+          <div class="toolbar-right">
+            <input type="search" id="invSearch" placeholder="Buscar insumo…">
+            <button class="btn primary" id="newSupply">+ Nuevo insumo</button>
+          </div>
+        </div>
+        <div id="invContent">Cargando…</div>
+      </section>
+
+      <!-- ======================= MENÚ Y RECETAS ======================= -->
+      <section class="view hidden" id="view-products">
+        <div class="toolbar">
+          <div class="chips" id="productCats"></div>
+          <div class="toolbar-right">
+            <button class="btn light" id="manageCats">Categorías</button>
+            <button class="btn primary" id="newProduct">+ Nuevo producto</button>
+          </div>
+        </div>
+        <p class="hint">La disponibilidad se calcula con el inventario real: un producto se bloquea solo cuando algún insumo de su receta no alcanza. “Visible” solo decide si aparece en el menú.</p>
+        <div id="productsContent">Cargando…</div>
+      </section>
+
+      <!-- ======================= REPORTES ======================= -->
+      <section class="view hidden" id="view-reports">
+        <div class="toolbar">
+          <div class="chips" id="reportRange">
+            <button class="chip active" data-range="hoy">Hoy</button>
+            <button class="chip" data-range="semana">Esta semana</button>
+            <button class="chip" data-range="mes">Este mes</button>
+            <button class="chip" data-range="custom">Personalizado</button>
+          </div>
+          <div class="toolbar-right">
+            <label class="inline">Desde <input type="date" id="repFrom"></label>
+            <label class="inline">Hasta <input type="date" id="repTo"></label>
+            <button class="btn primary" id="runReport">Consultar</button>
+            <button class="btn light" id="exportReport">⬇ CSV</button>
+          </div>
+        </div>
+        <div class="tiles tiles-4" id="repTiles"></div>
+        <div class="grid-2">
+          <article class="card"><div class="card-head"><h3>📅 Ventas por día</h3></div><div id="repDays"></div></article>
+          <article class="card"><div class="card-head"><h3>💳 Métodos de pago</h3></div><div id="repMethods"></div></article>
+          <article class="card"><div class="card-head"><h3>🏆 Más vendidos</h3></div><div id="repTop"></div></article>
+          <article class="card"><div class="card-head"><h3>🐢 Menos vendidos</h3></div><div id="repBottom"></div></article>
+          <article class="card"><div class="card-head"><h3>⏰ Ventas por hora</h3></div><div id="repHours"></div></article>
+          <article class="card"><div class="card-head"><h3>🔥 Productos que más inventario consumen</h3></div><div id="repProductUse"></div></article>
+        </div>
+        <article class="card"><div class="card-head"><h3>🥛 Consumo de insumos</h3><span class="muted small">Según los movimientos reales del periodo</span></div><div id="repSupplyUse"></div></article>
+        <div class="grid-2">
+          <article class="card"><div class="card-head"><h3>🔁 Movimientos de inventario del periodo</h3></div><div id="repMoves"></div></article>
+          <article class="card"><div class="card-head"><h3>📦 Insumos que necesitan reposición</h3></div><div id="repRestock"></div></article>
+        </div>
+        <article class="card">
+          <div class="card-head"><h3>🗓️ Cortes diarios (historial)</h3><button class="btn tiny light" id="makeCut">Generar corte de ayer</button></div>
+          <div id="repCuts"></div>
+        </article>
+      </section>
+
+      <!-- ======================= ALERTAS ======================= -->
+      <section class="view hidden" id="view-alerts">
+        <div class="toolbar">
+          <div class="chips" id="alertFilters">
+            <button class="chip active" data-filter="abiertas">Abiertas</button>
+            <button class="chip" data-filter="resueltas">Resueltas</button>
+            <button class="chip" data-filter="todas">Todas</button>
+          </div>
+        </div>
+        <p class="hint">Las alertas se crean solas. Las de inventario y disponibilidad se resuelven automáticamente al reabastecer; las de atraso, al avanzar el pedido.</p>
+        <div id="alertsContent">Cargando…</div>
+      </section>
+
+      <!-- ======================= AGENTE ======================= -->
+      <section class="view hidden" id="view-agent">
+        <div class="agent-layout">
+          <article class="card chat-card">
+            <div class="card-head"><h3>🤖 Agente Café Aroma</h3><span class="muted small">Responde solo con datos reales de Supabase</span></div>
+            <div class="chat" id="chatLog"></div>
+            <div class="suggestions" id="chatSuggestions"></div>
+            <form class="chat-form" id="chatForm">
+              <input name="q" autocomplete="off" placeholder="Pregunta algo… ej. ¿Qué insumos necesitamos comprar?" maxlength="300">
+              <button class="btn primary" type="submit">Enviar</button>
+            </form>
+          </article>
+          <div class="agent-side">
+            <article class="card">
+              <div class="card-head"><h3>🔎 Detecciones automáticas</h3><button class="btn tiny light" id="runAgent">Revisar ahora</button></div>
+              <div id="agentFindings" class="findings">Cargando…</div>
+            </article>
+            <article class="card">
+              <div class="card-head"><h3>✋ Esperando tu autorización</h3></div>
+              <div id="agentActions">Cargando…</div>
+            </article>
+            <article class="card">
+              <div class="card-head"><h3>📜 Acciones recientes</h3></div>
+              <div id="agentHistory" class="activity">Cargando…</div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================= CLIENTES ======================= -->
+      <section class="view hidden" id="view-customers">
+        <div class="toolbar"><input type="search" id="customerSearch" placeholder="Buscar cliente…"></div>
+        <div id="customersContent">Cargando…</div>
+      </section>
+
+      <!-- ======================= MENSAJES ======================= -->
+      <section class="view hidden" id="view-messages">
+        <div id="messagesContent">Cargando…</div>
+      </section>
+
+      <!-- ======================= CONFIGURACIÓN ======================= -->
+      <section class="view hidden" id="view-settings">
+        <div class="grid-2">
+          <article class="card">
+            <div class="card-head"><h3>⚙️ Operación</h3></div>
+            <form id="settingsForm" class="form-grid"></form>
+          </article>
+          <article class="card">
+            <div class="card-head"><h3>🎟️ Cupones</h3><button class="btn tiny primary" id="newCoupon">+ Cupón</button></div>
+            <div id="couponsContent">Cargando…</div>
+            <div class="card-head" style="margin-top:18px"><h3>💳 Métodos de pago</h3></div>
+            <div id="paymentsContent">Cargando…</div>
+          </article>
+        </div>
+      </section>
+
+      <p class="footer-note">Café Aroma V3 · Supabase. Todas las cifras se calculan con los datos almacenados en la base de datos.</p>
+    </main>
+  </div>
+</div>
+
+<!-- Diálogo genérico -->
+<div class="dialog" id="dialog" aria-hidden="true">
+  <div class="dialog-backdrop" data-dialog-close></div>
+  <div class="dialog-card" role="dialog" aria-modal="true" aria-labelledby="dialogTitle">
+    <button class="dialog-x" data-dialog-close aria-label="Cerrar">×</button>
+    <h2 id="dialogTitle"></h2>
+    <form id="dialogForm">
+      <div id="dialogBody"></div>
+      <p class="form-msg" id="dialogMsg"></p>
+      <div class="dialog-actions">
+        <button type="button" class="btn light" data-dialog-close>Cancelar</button>
+        <button type="submit" class="btn primary" id="dialogOk">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="js/comun.js"></script>
+<script src="js/agente.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Café Aroma - Café de especialidad, repostería y desayunos." />
+  <title>Café Aroma | Café de especialidad</title>
+
+  <!-- Tipografías -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+
+<body>
+  <!-- =========================================================
+       HEADER
+       ========================================================= -->
+  <header class="site-header">
+    <div class="container nav">
+      <a class="logo" href="#inicio" aria-label="Café Aroma inicio">
+        <span class="logo-icon">☕</span> Café <span>Aroma</span>
+      </a>
+
+      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">☰</button>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a class="active" href="#inicio">Inicio</a></li>
+        <li><a href="#nosotros">Nosotros</a></li>
+        <li><a href="#menu">Menú</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+
+      <button class="track-trigger" id="trackBtn" aria-label="Consultar mi pedido">📦 <span class="label">Mi pedido</span></button>
+
+      <button class="account-trigger" id="accountBtn" aria-label="Abrir mi cuenta">👤 <span id="accountLabel">Mi cuenta</span></button>
+
+      <button class="cart-trigger" id="openCart" aria-label="Abrir carrito">
+        🛒 <span class="label">Carrito</span>
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- =======================================================
+         HERO
+         ======================================================= -->
+    <section class="hero" id="inicio">
+      <div class="container">
+        <div class="hero-content">
+          <p class="eyebrow">Café de especialidad</p>
+          <h1>El aroma que despierta <em>tus sentidos.</em></h1>
+          <p>
+            Café cuidadosamente seleccionado, ingredientes de calidad
+            y un espacio creado para disfrutar cada momento.
+          </p>
+
+          <div class="hero-actions">
+            <a href="#menu" class="btn btn-primary">Ver Menú</a>
+            <button class="btn btn-outline" id="heroOrderBtn">Ordenar Ahora</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================
+         NOSOTROS
+         ======================================================= -->
+    <section class="section about" id="nosotros">
+      <div class="container about-grid">
+        <div class="about-images">
+          <img
+            class="tall"
+            src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=1000&q=85"
+            alt="Interior acogedor de una cafetería"
+            loading="lazy"
+          />
+          <div class="stack">
+            <img
+              src="https://images.unsplash.com/photo-1497515114629-f71d768fd07c?auto=format&fit=crop&w=700&q=85"
+              alt="Taza de café sobre una mesa"
+              loading="lazy"
+            />
+            <img
+              src="https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&w=700&q=85"
+              alt="Barista preparando café"
+              loading="lazy"
+            />
+          </div>
+        </div>
+
+        <div class="about-copy">
+          <p class="eyebrow">Nosotros</p>
+          <h2>Nuestra historia</h2>
+          <p>
+            Café Aroma nació de la pasión por el buen café y de las ganas de
+            crear un espacio donde cada visita se sintiera especial.
+          </p>
+          <p>
+            Seleccionamos granos de origen responsable y los preparamos con
+            técnicas artesanales para ofrecer una experiencia cálida,
+            sencilla y deliciosa.
+          </p>
+
+          <div class="signature">Hecho con amor ♡</div>
+
+          <div class="values">
+            <article class="value">
+              <div class="value-icon">☕</div>
+              <h3>Granos Premium</h3>
+              <p>Seleccionados cuidadosamente</p>
+            </article>
+            <article class="value">
+              <div class="value-icon">◉</div>
+              <h3>Preparación Artesanal</h3>
+              <p>Hecho al momento para ti</p>
+            </article>
+            <article class="value">
+              <div class="value-icon">🌿</div>
+              <h3>Sostenibilidad</h3>
+              <p>Prácticas responsables</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================
+         MENÚ
+         ======================================================= -->
+    <section class="section menu-section" id="menu">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">Café Aroma</p>
+          <h2>Nuestro Menú</h2>
+          <p>Selecciona tus favoritos y agrégalos al carrito.</p>
+        </div>
+
+        <!-- Las categorías se cargan desde Supabase -->
+        <div class="tabs" id="categoryTabs"></div>
+
+        <div class="menu-toolbar">
+          <span class="menu-status" id="menuStatus">Cargando menú...</span>
+          <label><input type="checkbox" id="hideSoldOut"> Ocultar agotados</label>
+        </div>
+
+        <!-- La disponibilidad se calcula con el inventario real de insumos -->
+        <div class="menu-grid" id="menuGrid"></div>
+      </div>
+    </section>
+
+    <!-- =======================================================
+         CONTACTO
+         ======================================================= -->
+    <section class="section contact" id="contacto">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">Contacto</p>
+          <h2>Visítanos o escríbenos</h2>
+          <p>Nos encantará conocerte y saber de ti.</p>
+        </div>
+
+        <div class="contact-grid">
+          <div class="contact-card">
+            <h2>Una mesa, un café y buenos momentos.</h2>
+            <p>
+              Ven a disfrutar de nuestros sabores o envíanos un mensaje.
+              Nuestro equipo estará encantado de atenderte.
+            </p>
+
+            <div class="contact-info">
+              <div class="info-item">
+                <div class="info-icon">📍</div>
+                <div>
+                  <h3>Dirección</h3>
+                  <p>Av. Siempre Viva 123, Col. Centro<br>Puebla, Pue. 72000</p>
+                </div>
+              </div>
+
+              <div class="info-item">
+                <div class="info-icon">🕒</div>
+                <div>
+                  <h3>Horario</h3>
+                  <p>Lunes a Domingo · 7:00 am - 9:00 pm</p>
+                </div>
+              </div>
+
+              <div class="info-item">
+                <div class="info-icon">📞</div>
+                <div>
+                  <h3>Teléfono</h3>
+                  <p>222 123 4567</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="socials">
+              <a href="#" aria-label="Facebook">f</a>
+              <a href="#" aria-label="Instagram">◎</a>
+              <a href="#" aria-label="TikTok">♪</a>
+            </div>
+          </div>
+
+          <div class="contact-map">
+            <img
+              src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=1100&q=85"
+              alt="Exterior de Café Aroma"
+              loading="lazy"
+            />
+          </div>
+
+          <form class="contact-form" id="contactForm">
+            <label>
+              Nombre
+              <input type="text" name="name" required placeholder="Tu nombre" />
+            </label>
+
+            <label>
+              Correo electrónico
+              <input type="email" name="email" required placeholder="tu@email.com" />
+            </label>
+
+            <label>
+              Mensaje
+              <textarea name="message" required placeholder="¿En qué podemos ayudarte?"></textarea>
+            </label>
+
+            <button class="btn btn-primary" type="submit">Enviar Mensaje ✈</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- =========================================================
+       FOOTER
+       ========================================================= -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a class="logo" href="#inicio">☕ Café <span>Aroma</span></a>
+          <p>Más que café, momentos que se quedan contigo.</p>
+        </div>
+
+        <div>
+          <h3>Navegación</h3>
+          <ul>
+            <li><a href="#inicio">Inicio</a></li>
+            <li><a href="#nosotros">Nosotros</a></li>
+            <li><a href="#menu">Menú</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3>Enlaces rápidos</h3>
+          <ul>
+            <li><a href="#">Preguntas frecuentes</a></li>
+            <li><a href="#">Políticas de envío</a></li>
+            <li><a href="#">Términos y condiciones</a></li>
+            <li><a href="#">Aviso de privacidad</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3>Síguenos</h3>
+          <div class="socials">
+            <a href="#" aria-label="Facebook">f</a>
+            <a href="#" aria-label="Instagram">◎</a>
+            <a href="#" aria-label="TikTok">♪</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2026 Café Aroma. Todos los derechos reservados.</span>
+        <span>Hecho con café y cariño ☕</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =========================================================
+       CARRITO
+       ========================================================= -->
+  <div class="cart-overlay" id="cartOverlay"></div>
+
+  <aside class="cart-drawer" id="cartDrawer" aria-label="Carrito de compras">
+    <div class="cart-head">
+      <h2>Tu Carrito</h2>
+      <button class="close-cart" id="closeCart" aria-label="Cerrar carrito">×</button>
+    </div>
+
+    <div class="cart-body" id="cartBody">
+      <div class="empty-cart">
+        <div>
+          <div style="font-size: 3rem; margin-bottom: 10px;">🛒</div>
+          <strong>Tu carrito está vacío</strong>
+          <p>Agrega algo delicioso desde nuestro menú.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="cart-footer">
+      <div class="summary-row">
+        <span>Subtotal</span>
+        <strong id="subtotal">$0.00</strong>
+      </div>
+      <div class="summary-row">
+        <span>Envío</span>
+        <strong id="shipping">$20.00</strong>
+      </div>
+      <div class="summary-row total">
+        <span>Total</span>
+        <strong id="total">$0.00</strong>
+      </div>
+
+      <button class="checkout-btn" id="checkoutBtn">🛍 Finalizar Pedido</button>
+      <p class="small-note" id="cartNote">Al finalizar, se mostrará un resumen de tu pedido.</p>
+    </div>
+  </aside>
+
+
+  <!-- =========================================================
+       MODAL DE DATOS DEL PEDIDO
+       ========================================================= -->
+  <div class="checkout-modal" id="checkoutModal" aria-hidden="true">
+    <div class="checkout-backdrop" id="checkoutBackdrop"></div>
+    <div class="checkout-card" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
+      <button class="close-checkout" id="closeCheckout" aria-label="Cerrar">×</button>
+      <h2 id="checkoutTitle">Finalizar pedido</h2>
+      <p class="checkout-intro">Ingresa tus datos para guardar tu pedido.</p>
+      <form id="checkoutForm">
+        <label>Nombre completo
+          <input type="text" name="name" required maxlength="100" placeholder="Tu nombre">
+        </label>
+        <label>Teléfono
+          <input type="tel" name="phone" required maxlength="20" placeholder="222 123 4567">
+        </label>
+        <label>Correo electrónico
+          <input type="email" name="email" maxlength="150" placeholder="tu@email.com">
+        </label>
+        <label>Método de pago
+          <select name="payment_method" id="paymentSelect" required>
+            <option value="efectivo">💵 Efectivo</option>
+            <option value="tarjeta">💳 Tarjeta</option>
+            <option value="transferencia">📱 Transferencia</option>
+          </select>
+        </label>
+        <label>Cupón de descuento (opcional)
+          <input type="text" name="coupon" maxlength="30" placeholder="Ej. AROMA10" autocomplete="off">
+        </label>
+        <label>Notas del pedido
+          <textarea name="notes" maxlength="500" placeholder="Ej. Sin azúcar, recoger en tienda..."></textarea>
+        </label>
+        <div class="checkout-lines" id="checkoutLines"></div>
+        <div class="checkout-total-line">
+          <span>Total estimado</span>
+          <strong id="checkoutTotal">$0.00</strong>
+        </div>
+        <button class="checkout-submit" type="submit">☕ Confirmar pedido</button>
+        <p class="form-msg" id="checkoutMsg" role="alert"></p>
+        <p class="small-note">El total final (con cupón) lo calcula el sistema. Antes de registrar tu pedido verificamos que haya insumos suficientes.</p>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- =========================================================
+       CUENTA DEL CLIENTE - V2
+       ========================================================= -->
+  <div class="account-modal" id="accountModal" aria-hidden="true">
+    <div class="account-backdrop" id="accountBackdrop"></div>
+    <div class="account-card" role="dialog" aria-modal="true">
+      <button class="close-checkout" id="closeAccount" aria-label="Cerrar">×</button>
+      <div id="accountGuest">
+        <p class="eyebrow">Café Aroma Club</p>
+        <h2>Mi cuenta</h2>
+        <p class="checkout-intro">Inicia sesión para guardar favoritos, acumular puntos y consultar tus pedidos.</p>
+        <div class="account-switch">
+          <button class="account-mode active" data-mode="login">Iniciar sesión</button>
+          <button class="account-mode" data-mode="signup">Crear cuenta</button>
+        </div>
+        <form id="accountForm">
+          <label>Nombre completo <input name="name" maxlength="100" placeholder="Tu nombre"></label>
+          <label>Correo electrónico <input type="email" name="email" required placeholder="tu@email.com"></label>
+          <label>Contraseña <input type="password" name="password" required minlength="6" placeholder="Mínimo 6 caracteres"></label>
+          <label id="accountPhoneLabel">Teléfono <input name="phone" maxlength="20" placeholder="222 123 4567"></label>
+          <button class="checkout-submit" type="submit" id="accountSubmit">Entrar</button>
+        </form>
+        <p id="accountMessage" class="small-note"></p>
+      </div>
+      <div id="accountUser" class="hidden">
+        <div class="profile-head">
+          <div class="avatar" id="profileAvatar">☕</div>
+          <div><p class="eyebrow">Mi perfil</p><h2 id="profileName">Cliente</h2><p class="muted" id="profileEmail"></p></div>
+        </div>
+        <div class="profile-stats">
+          <div><b id="profilePoints">0</b><span>⭐ Puntos</span></div>
+          <div><b id="profileOrders">0</b><span>🧾 Pedidos</span></div>
+          <div><b id="profileSpent">$0</b><span>💰 Gastado</span></div>
+        </div>
+        <div class="profile-tabs">
+          <button class="profile-tab active" data-profile-tab="perfil">Perfil</button>
+          <button class="profile-tab" data-profile-tab="pedidos">Pedidos</button>
+          <button class="profile-tab" data-profile-tab="favoritos">❤️ Favoritos</button>
+          <button class="profile-tab" data-profile-tab="promos">🎁 Promos</button>
+          <button class="profile-tab" data-profile-tab="avisos">🔔 Avisos</button>
+        </div>
+        <section class="profile-section" id="profilePerfil">
+          <form id="profileForm">
+            <label>Nombre <input name="name" required maxlength="100"></label>
+            <label>Teléfono <input name="phone" maxlength="20"></label>
+            <label>Dirección principal <textarea name="address" maxlength="250" placeholder="Opcional"></textarea></label>
+            <button type="submit">Guardar cambios</button>
+          </form>
+        </section>
+        <section class="profile-section hidden" id="profilePedidos"><div id="myOrders">Cargando...</div></section>
+        <section class="profile-section hidden" id="profileFavoritos"><div id="myFavorites">Cargando...</div></section>
+        <section class="profile-section hidden" id="profilePromos"><div id="myPromos">Cargando...</div></section>
+        <section class="profile-section hidden" id="profileAvisos"><div id="myNotifications">Cargando...</div></section>
+        <button class="secondary logout-account" id="accountLogout">Cerrar sesión</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       RESUMEN DEL PEDIDO (V3)
+       ========================================================= -->
+  <div class="modal" id="summaryModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close="summaryModal"></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="summaryTitle">
+      <button class="close-checkout" data-close="summaryModal" aria-label="Cerrar">×</button>
+      <p class="eyebrow">Pedido recibido</p>
+      <h2 id="summaryTitle">¡Gracias por tu pedido!</h2>
+      <p class="checkout-intro">Guarda tu código para consultar el estado en cualquier momento desde “📦 Mi pedido”.</p>
+      <div class="order-code"><div><span>Código de seguimiento</span><br><b id="summaryCode">—</b></div><button id="copyCode" type="button">Copiar</button></div>
+      <div id="summaryBody"></div>
+      <div class="modal-actions">
+        <button class="btn-light" data-close="summaryModal" type="button">Seguir comprando</button>
+        <button class="btn-dark" id="summaryTrack" type="button">📦 Ver estado</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       SEGUIMIENTO DEL PEDIDO (V3)
+       ========================================================= -->
+  <div class="modal" id="trackModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close="trackModal"></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="trackTitle">
+      <button class="close-checkout" data-close="trackModal" aria-label="Cerrar">×</button>
+      <p class="eyebrow">Seguimiento</p>
+      <h2 id="trackTitle">Consulta tu pedido</h2>
+      <form class="track-form" id="trackForm">
+        <input name="code" required maxlength="20" placeholder="CA-XXXXXXXX" autocomplete="off" aria-label="Código de seguimiento">
+        <button type="submit">Consultar</button>
+      </form>
+      <div id="recentOrders"></div>
+      <div id="trackResult"></div>
+    </div>
+  </div>
+
+  <div class="config-banner hidden" id="configBanner">
+    ⚙️ El sitio aún no está conectado a Supabase. Configura <b>config.js</b> (ver README) para ver el menú y recibir pedidos.
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- Scripts: Supabase + configuración + lógica del sitio -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="js/comun.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
